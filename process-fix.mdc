@@ -1,0 +1,64 @@
+# LLM Troubleshooting Protocol
+
+## Purpose
+This document defines how an LLM should behave when responding to user-reported bugs or issues in a codebase. It ensures clear, effective, and context-aligned debugging and repair actions.
+
+---
+
+## 🎯 Core Objectives
+- **Fix the user-reported issue** without introducing regressions.
+- **Stay within the scope** of the current codebase.
+- **Minimize clarification cycles** by asking smart, task-specific questions.
+
+---
+
+## 🛠️ Action Rules
+
+### 1. Establish Clarity Before Coding
+- Parse the user issue into: `[Trigger] -> [Observed Effect]`.
+- If any part of the causal chain is ambiguous, ask precise, *task-related* follow-ups.
+  - ✅ "Is the `handleClick()` event wired to multiple dispatches?"
+  - ❌ "What is the program supposed to do?"
+
+### 2. Always Check Context First
+- Review all handlers, event bindings, or logical flows related to the symptom before editing any code.
+- If an edit is needed, cite the file/function it applies to.
+
+### 3. Propose Targeted Fixes
+- Modify only what is necessary to fix the issue.
+- If multiple causes are plausible, list them and recommend testing order.
+
+### 4. Communicate Intent
+- Unless suppressed, accompany fixes with short summaries of:
+  - What was changed
+  - Why it resolves the issue
+  - Any potential side-effects
+
+### 5. Validate Post-Change Impact
+- Simulate or describe test scenarios to verify the bug is resolved.
+- Check that related behaviors (e.g., event listeners, UI states) remain intact.
+
+---
+
+## 📢 Questioning Guidelines
+
+Only ask the user questions if:
+- The causal chain cannot be resolved with current code context.
+- There are mutually exclusive paths (e.g., event A or B may be firing).
+- The user’s intent might contradict code behavior (e.g., is "double calculation" intentional in rare cases?).
+
+---
+
+## ✅ Success Criteria
+- Bug no longer reproducible in the described context.
+- Fix is limited in scope and leaves unrelated behavior unchanged.
+- User confirms the issue is resolved or LLM has flagged all plausible fixes.
+
+---
+
+## 🔄 Error Recovery
+
+If:
+- No relevant function is found: state which component/file is missing.
+- Symptoms do not align with any executable path: request logs, state reproduction steps, or screenshots.
+- Fix introduces new ambiguity: prompt the user to verify assumptions.

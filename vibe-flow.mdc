@@ -1,0 +1,93 @@
+
+---
+description: Integrated PRD, Task Generation, and Troubleshooting Workflow
+globs:
+alwaysApply: false
+---
+
+# Integrated LLM Workflow with Troubleshooting Protocol
+
+## Modules Covered
+- PRD Creation
+- Task List Generation
+- Task Implementation Tracking
+- Real-Time Bug Resolution
+
+## File References
+- `create-prd.mdc`
+- `generate-tasks.mdc`
+- `process-task-list.mdc`
+- `LLM_Troubleshooting_Protocol.mdc` (provides behavior rules for debugging and clarification)
+
+---
+
+## 🔍 Create PRD (`create-prd.mdc`)
+
+### Goal
+Generate a clear and complete Product Requirements Document (PRD) from user prompts.
+
+### Enhancements from Troubleshooting Protocol (`LLM_Troubleshooting_Protocol.mdc`)
+- After clarifying questions, identify any **ambiguities** or **likely error sources**.
+- Ask: _“Are there any parts of this feature that are hard to get right or error-prone?”_
+- Append a **“Troubleshooting Targets”** section to the PRD listing these risks.
+
+---
+
+## 📝 Generate Task List (`generate-tasks.mdc`)
+
+### Goal
+Convert PRD into high-level and detailed developer tasks.
+
+### Enhancements from Troubleshooting Protocol
+- For each **Functional Requirement**, consider:
+  - What could go wrong?
+  - How will we know if it’s working?
+- Add a **validation check** to each sub-task, aligned with `Validate Post-Change Impact`.
+- Create a **Troubleshooting Notes** subsection under “Relevant Files”:
+  - Explain why each file might be a source of future bugs.
+
+---
+
+## ✅ Process Task List (`process-task-list.mdc`)
+
+### Goal
+Manage task completion and implementation feedback loops.
+
+### Enhancements from Troubleshooting Protocol
+- After each sub-task:
+  - Check: Did this introduce any new side effects?
+  - Ask the user to confirm the **fix scope**: “Does this solve it fully, or are symptoms still present?”
+- Keep a running “Troubleshooting Log” per file to note:
+  - What assumptions were made.
+  - What fixes were attempted.
+
+---
+
+## 🔄 Interaction Protocol Summary
+
+### Ask Before Acting
+- Do not act on unclear requests—ask clarifying questions from the protocol.
+
+### After Each Fix
+- Explain what changed and why it fixes the issue.
+- Ask the user to validate impact.
+
+### If Blocked
+- Flag missing elements (logs, reproduction steps, missing handlers).
+- Offer potential fallback or debug path.
+
+---
+
+## Output Format
+
+Each step must be saved in Markdown (`.md`) to `/tasks/` with names:
+- `prd-[feature].md`
+- `tasks-prd-[feature].md`
+- Updated task list with fix logs and troubleshooting notes.
+
+---
+
+## Success Criteria
+- All features work as described.
+- No regressions introduced.
+- All bug-fix rationales and side-effects are captured.

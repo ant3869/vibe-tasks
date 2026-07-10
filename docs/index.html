@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0b1018" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icon.svg" />
+  <link rel="apple-touch-icon" href="./icon.svg" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Move Mission Control</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<div id="app">
+  <canvas id="scene"></canvas>
+
+  <header class="topbar">
+    <div class="toprow">
+      <div class="brand">
+        <div class="brandmark">M</div>
+        <div class="brandcopy">
+          <strong>Move Mission Control</strong>
+          <span>The Great Box Migration</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="timerPill" class="timer-pill" aria-label="Pause or resume sprint">
+          <span class="timer-dot"></span><span id="timerText">15:00</span>
+        </button>
+        <div class="progress-pill">
+          <div id="progressRing" class="progress-ring"><span id="progressValue">0</span></div>
+          <span>move done</span>
+        </div>
+        <button id="dataBtn" class="icon-btn" aria-label="Data and backup">⋯</button>
+      </div>
+    </div>
+    <nav id="zoneStrip" class="zone-strip"></nav>
+  </header>
+
+  <div id="gestureHint" class="gesture-hint">Drag to orbit · pinch to zoom · tap boxes</div>
+
+  <div class="action-dock">
+    <button id="nextBtn" class="dock-btn primary">WHAT NOW?</button>
+    <button id="sprintBtn" class="dock-btn">15 MIN</button>
+    <button id="addBtn" class="dock-btn">＋ ADD</button>
+  </div>
+
+  <section class="sheet" id="sheet">
+    <div id="sheetHandle" class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
+    <div class="sheet-head">
+      <div class="sheet-title">
+        <div id="sheetEyebrow" class="eyebrow">Mission overview</div>
+        <h2 id="sheetTitle">Your move, without the brain fog</h2>
+        <p id="sheetSubtitle">Tap a room, task, or box in the scene.</p>
+      </div>
+      <button id="homeBtn" class="icon-btn" aria-label="Return to overview">⌂</button>
+    </div>
+    <div class="sheet-tabs">
+      <button class="tab active" data-tab="overview">Overview</button>
+      <button class="tab" data-tab="tasks">Tasks</button>
+      <button class="tab" data-tab="boxes">Boxes</button>
+    </div>
+    <div id="sheetContent" class="sheet-content"></div>
+  </section>
+
+  <div id="addModal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modal-head"><h2>Add to the move</h2><button class="close-btn" data-close="addModal">×</button></div>
+      <div class="type-switch">
+        <button class="type-btn active" data-add-type="task">Task</button>
+        <button class="type-btn" data-add-type="box">Box</button>
+      </div>
+      <form id="addForm">
+        <div id="taskFields" class="form-grid">
+          <div class="field"><label>Task</label><input id="taskTitleInput" maxlength="80" placeholder="Example: Photograph the empty apartment" required /></div>
+          <div class="two-col">
+            <div class="field"><label>Zone</label><select id="taskZoneInput"></select></div>
+            <div class="field"><label>Minutes</label><input id="taskMinutesInput" type="number" min="1" max="480" value="15" /></div>
+          </div>
+          <div class="field"><label>Priority</label>
+            <select id="taskPriorityInput">
+              <option value="3">High — do not let this become future-Ant's problem</option>
+              <option value="2" selected>Medium</option>
+              <option value="1">Low</option>
+            </select>
+          </div>
+          <div class="field"><label>Notes</label><textarea id="taskNotesInput" placeholder="Optional details, phone numbers, reminders..."></textarea></div>
+        </div>
+
+        <div id="boxFields" class="form-grid hidden">
+          <div class="field"><label>Box / item</label><input id="boxNameInput" maxlength="80" placeholder="Example: Soldering tools" /></div>
+          <div class="two-col">
+            <div class="field"><label>Destination</label><select id="boxDestinationInput"></select></div>
+            <div class="field"><label>Stage</label><select id="boxStageInput"></select></div>
+          </div>
+          <div class="field"><label>Category</label><input id="boxCategoryInput" maxlength="40" placeholder="Tools, electronics, kitchen..." /></div>
+        </div>
+
+        <div class="modal-actions"><button type="button" class="big-btn secondary" data-close="addModal">Cancel</button><button class="big-btn" type="submit">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="dataModal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modal-head"><h2>Backup & controls</h2><button class="close-btn" data-close="dataModal">×</button></div>
+      <p class="data-note">Everything is stored in this browser. Export a backup before clearing browser data or moving the app to another phone.</p>
+      <div class="data-actions">
+        <button id="downloadBtn" class="big-btn">Download backup</button>
+        <button id="shareBtn" class="big-btn secondary">Share backup</button>
+        <button id="importBtn" class="big-btn secondary">Import backup</button>
+        <button id="resetBtn" class="big-btn secondary">Reset demo</button>
+      </div>
+      <input id="importFile" class="hidden" type="file" accept=".json,application/json" />
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <div id="confetti" class="confetti"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

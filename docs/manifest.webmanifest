@@ -1,0 +1,19 @@
+{
+  "name": "Move Mission Control",
+  "short_name": "Move Control",
+  "description": "A 3D moving command center for tasks, boxes, rooms, and 15-minute sprints.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1018",
+  "theme_color": "#0b1018",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
